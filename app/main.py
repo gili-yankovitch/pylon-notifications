@@ -100,7 +100,7 @@ def _notify():
 		return dumps({"success": False}), 400
 
 	# Update DB data
-	res = _updateStatus(os.environ["ENV_ID"], data)
+	res = _updateStatusVersion(os.environ["ENV_ID"], data, 128)
 
 	print("Version: %d" % version)
 	print(data)
