@@ -28,7 +28,7 @@ def _hexToRGB(hex):
 		"red": int(hex[1:3], 16),
 		"green": int(hex[3:5], 16),
 		"blue": int(hex[5:7], 16),
-		"brightness": 16
+		"brightness": 12
 	}
 
 app = Flask(__name__,
