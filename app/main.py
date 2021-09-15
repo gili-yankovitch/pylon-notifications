@@ -56,7 +56,7 @@ def _updateStatus(id, data):
 
 	# Expand
 	if type(data["colors"]) is not list:
-		data["colors"] = [ data["colors"] ] * 6
+		data["colors"] = [ data["colors"] ] * 8
 
 	for idx in range(len(data["colors"])):
 		color = data["colors"][idx]
