@@ -90,6 +90,7 @@ def _notify():
 @app.route("/get", methods = ["GET"])
 def _get():
 	global ledData
+	global version
 
 	if ledData is None or "version" not in ledData:
 		data = _getStatus(os.environ["ENV_ID"])
