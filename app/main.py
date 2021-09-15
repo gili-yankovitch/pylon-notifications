@@ -28,7 +28,7 @@ def _hexToRGB(hex):
 		"red": int(hex[1:3], 16),
 		"green": int(hex[3:5], 16),
 		"blue": int(hex[5:7], 16),
-		"brightness": 31
+		"brightness": 24
 	}
 
 app = Flask(__name__,
@@ -41,8 +41,7 @@ def _getStatus(id):
 
 	return ledData
 
-def _updateStatus(id, data):
-	global version
+def _updateStatusVersion(id, data, version):
 	global ledData
 
 	# Add version
@@ -71,12 +70,16 @@ def _updateStatus(id, data):
 	else:
 		res = collection.update_one({"id": id}, {"$set": record })
 
+def _updateStatus(id, data):
+	global version
+	return _updateStatusVersion(id, data, version)
+
 def _disableNotification(timeout):
 	print("Disabling notification in %ds" % timeout)
 	sleep(timeout)
 	current = _getStatus(os.environ["ENV_ID"])
 	print(current)
-	_updateStatus(os.environ["ENV_ID"], {"animation": "still", "colors": current["colors"]})
+	_updateStatusVersion(os.environ["ENV_ID"], {"animation": "still", "colors": current["colors"]}, 255)
 	print("Notification disabled")
 
 @app.route("/notify", methods = ["POST"])
