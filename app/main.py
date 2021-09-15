@@ -69,6 +69,12 @@ def _disableNotification(timeout):
 def _notify():
 	data = request.get_json()
 
+	if data is None or \
+		"animation" not in data or \
+		"colors" not in data or \
+		"timeout" not in data:
+		return dumps({"success": False}), 500
+
 	# Update DB data
 	res = _updateStatus(os.environ["ENV_ID"], data)
 
