@@ -6,6 +6,14 @@ OPCODE_FRAME_END   = 1
 OPCODE_SLEEP       = 2
 OPCODE_LED         = 3
 
+def _hexToRGB(hex):
+	return {
+		"red": int(hex[1:3], 16),
+		"green": int(hex[3:5], 16),
+		"blue": int(hex[5:7], 16),
+		"brightness": 31
+	}
+
 class Animation:
 	def __init__(self, initColors, frames, perFrameWait, perAnimationWait):
 		self.initColors = initColors
@@ -91,6 +99,9 @@ class Frame:
 
 		if type(frameData) is list:
 			for led in frameData:
+				if type(led) is str and led[0] == '#':
+					led = _hexToRGB(led)
+				
 				if "brightness" not in led:
 					led["brightness"] = 0
 
