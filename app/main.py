@@ -37,8 +37,13 @@ app = Flask(__name__,
 
 def _getStatus(id):
 	global ledData
+	global version
+
 	ledData = collection.find_one({"id": id})["data"]
 
+	if "version" in ledData:
+		version = ledData["version"]
+	
 	return ledData
 
 def _updateStatusVersion(id, data, version):
@@ -47,9 +52,10 @@ def _updateStatusVersion(id, data, version):
 	# Add version
 	ledData["version"] = version
 
+	# Update version
 	version += 1
+	data["version"] = version
 
-	# ledData["animation"] = data["animation"]
 	ledData["animation"] = data["animation"]
 	ledData["colors"] = data["colors"]
 
@@ -57,6 +63,7 @@ def _updateStatusVersion(id, data, version):
 	if type(data["colors"]) is not list:
 		data["colors"] = [ data["colors"] ] * 8
 
+	# Reformat to RGB
 	for idx in range(len(data["colors"])):
 		color = data["colors"][idx]
 		
@@ -90,7 +97,7 @@ def _notify():
 		"animation" not in data or \
 		"colors" not in data or \
 		"timeout" not in data:
-		return dumps({"success": False}), 500
+		return dumps({"success": False}), 400
 
 	# Update DB data
 	res = _updateStatus(os.environ["ENV_ID"], data)
@@ -109,13 +116,7 @@ def _get():
 	global ledData
 	global version
 
-	if ledData is None or "version" not in ledData:
-		data = _getStatus(os.environ["ENV_ID"])
-
-		ledData = data
-
-		if "version" in ledData:
-			version = ledData["version"]
+	data = _getStatus(os.environ["ENV_ID"])
 
 	response = bytes()
 	response += pack("BB", VALID_CODE, version & 0xff) # Version
