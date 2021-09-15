@@ -23,6 +23,14 @@ client = MongoClient(os.environ["MONGO_URI"])
 db = client["pylon"]
 collection = db["notifications"]
 
+def _hexToRGB(hex):
+	return {
+		"red": int(hex[1:3], 16),
+		"green": int(hex[3:5], 16),
+		"blue": int(hex[5:7], 16),
+		"brightness": 31
+	}
+
 app = Flask(__name__,
 	static_folder = 'static',
 	template_folder='templates')
@@ -49,6 +57,12 @@ def _updateStatus(id, data):
 	# Expand
 	if type(data["colors"]) is not list:
 		data["colors"] = [ data["colors"] ] * 6
+
+	for idx in range(len(data["colors"])):
+		color = data["colors"][idx]
+		
+		if type(color) is str and color[0] == '#':
+			data["colors"][idx] = _hexToRGB(color)
 
 	record = {"timestamp": datetime.now(), "data": data, "id": id }
 
