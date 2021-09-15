@@ -94,7 +94,7 @@ def _get():
 	if ledData is None or "version" not in ledData:
 		data = _getStatus(os.environ["ENV_ID"])
 
-		ledData = data["data"]
+		ledData = data
 
 		if "version" in ledData:
 			version = ledData["version"]
